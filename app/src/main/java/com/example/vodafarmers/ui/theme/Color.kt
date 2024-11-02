@@ -58,3 +58,5 @@ val scrimDark = Color(0xFF000000)
 val inverseSurfaceDark = Color(0xFFDFE4DD)
 val inverseOnSurfaceDark = Color(0xFF2C322D)
 val inversePrimaryDark = Color(0xFF286A48)
+
+val yellow = Color(0xFFFFEA2D)
