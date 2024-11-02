@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">VodaFarmers</string>
+    <string name="trending_movies_section_title">Trending Movies</string>
+    <string name="view_all">View all</string>
 </resources>
