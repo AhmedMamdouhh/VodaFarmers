@@ -12,13 +12,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,13 +42,27 @@ import androidx.compose.ui.unit.dp
 import com.example.vodafarmers.R
 import com.example.vodafarmers.ui.theme.VodaFarmersTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxSize()) {
-        TrendingMoviesSection(
-            onViewAllClicked = { /*TODO*/ },
-            modifier = Modifier.fillMaxWidth()
-        )
+    var showTrendingMoviesBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val trendingMoviesBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    Box(modifier.fillMaxSize()) {
+        Column {
+            TrendingMoviesSection(
+                onViewAllClicked = { showTrendingMoviesBottomSheet = true },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        if (showTrendingMoviesBottomSheet) {
+            TrendingMoviesBottomSheet(
+                sheetState = trendingMoviesBottomSheetState,
+                onDismiss = { showTrendingMoviesBottomSheet = false },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
@@ -139,6 +162,41 @@ fun MovieInfoText(
             )
             .padding(4.dp)
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TrendingMoviesBottomSheet(
+    sheetState: SheetState,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = onDismiss,
+        modifier = modifier
+    ) {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(12.dp)
+        ) {
+            item {
+                Text(
+                    text = stringResource(R.string.trending_movies_section_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+            items(20) {
+                TrendingMovieCard(
+                    Modifier
+                        .height(250.dp)
+                        .fillMaxWidth()
+                )
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
